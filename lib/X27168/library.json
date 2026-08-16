@@ -1,0 +1,9 @@
+{ 
+  "name": "X27168",
+  "version": "0.1.0",
+  "author": "Auto-generated",
+  "sentence": "Minimal driver for X27.168 coreless motor using an H-bridge and ESP32 PWM.",
+  "paragraph": "Provides simple forward/backward/stop and speed control for two motors (A/B).",
+  "frameworks": ["arduino"],
+  "platforms": ["espressif32"]
+}

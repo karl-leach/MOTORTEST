@@ -1,0 +1,9 @@
+{
+  "name": "X27Motor",
+  "version": "0.1.0",
+  "author": "Auto-generated",
+  "sentence": "Open-loop sequence driver for X27.168 using TB6612FNG (no PWM, step sequence).",
+  "paragraph": "Drives X27.168 motors by stepping the two coils using a 4-output sequence. Supports background non-blocking stepping, homing (610 steps anticlockwise), and position mapping from a user-defined min/max range.",
+  "frameworks": ["arduino"],
+  "platforms": ["espressif32"]
+}
