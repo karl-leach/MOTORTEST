@@ -59,8 +59,9 @@ void X27Motor::begin() {
 
   // create background task
   if (!_taskHandle) {
-    xTaskCreatePinnedToCore(taskRun, "X27MotorTask", 2048, this, 3, &_taskHandle, 1);
+    // task priority set to 2 (was changed higher; 2 is a safer mid value)
     _currentStep = 600;
+    xTaskCreatePinnedToCore(taskRun, "X27MotorTask", 2048, this, 2, &_taskHandle, 1);
     setPosition(_minVal,true); // move to minVal position after homing
   }
 }
