@@ -90,6 +90,12 @@ void X27Motor::setStepDelay(uint16_t ms) {
 }
 
 void X27Motor::setPosition(int value) {
+
+  if(_homed == false) {
+    // If not homed, ignore setPosition calls
+    return;
+  }
+
   if (value < _minVal) value = _minVal;
   if (value > _maxVal) value = _maxVal;
   // map value to 0.._fullSteps
