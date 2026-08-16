@@ -26,7 +26,7 @@ public:
           int bin1 = MOTOR_BIN1_PIN, int bin2 = MOTOR_BIN2_PIN,
           int standby = MOTOR_STANDBY_PIN, bool standbyActiveHigh = MOTOR_STANDBY_ACTIVE_HIGH);
 
-  void begin(bool doHoming = true);
+  void begin();
   void setMinMaxValue(int minVal, int maxVal);
   void setFullTravelSteps(uint32_t steps);
   void setStepDelay(uint16_t ms);
@@ -37,7 +37,7 @@ public:
 
   void stop();
   bool isHomed();
-  void setHomed(bool homed) { _homed = homed; } // for testing only
+  void setHomed(bool homed); // for testing only
   
 
 private:

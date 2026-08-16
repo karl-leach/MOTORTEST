@@ -43,7 +43,7 @@ void X27Motor::setStandby(bool enable) {
   else writePinFast(_standby, _standbyActiveHigh ? FAST_LOW : FAST_HIGH);
 }
 
-void X27Motor::begin(bool doHoming) {
+void X27Motor::begin() {
   pinMode(_ain1, OUTPUT);
   pinMode(_ain2, OUTPUT);
   pinMode(_bin1, OUTPUT);
@@ -55,26 +55,13 @@ void X27Motor::begin(bool doHoming) {
   // ensure outputs off
   applySequence(0);
 
-  if (doHoming) {
-    // homing: move 610 steps anticlockwise (backward)
-    for (int i = 0; i < 610; ++i) {
-      stepBackwardOnce();
-      delay(_stepDelayMs);
-    }
-    // set home
-    _currentStep = 0;
-    _targetStep = 0;
-    _homed = true;
 
-  }
 
   // create background task
   if (!_taskHandle) {
     xTaskCreatePinnedToCore(taskRun, "X27MotorTask", 2048, this, 1, &_taskHandle, 1);
-    _currentStep = 610;
+    _currentStep = 600;
     setPosition(_minVal,true); // move to minVal position after homing
-    _homed = true;
-
   }
 }
 
@@ -98,8 +85,11 @@ void X27Motor::setPosition(int value, bool isHoming) {
 
   if(!_homed && !isHoming) {
     // If not homed and not a homing call, ignore setPosition calls
+    Serial.println("Warning: setPosition called before homing. Ignoring.");
     return;
   }
+
+  //Serial.println("setPosition called with value: " + String(value) + ", isHoming: " + String(isHoming));
 
   if (value < _minVal) value = _minVal;
   if (value > _maxVal) value = _maxVal;
@@ -113,6 +103,9 @@ void X27Motor::setPosition(int value, bool isHoming) {
   X27_ENTER_CRITICAL();
   _targetStep = (int)target;
   X27_EXIT_CRITICAL();
+
+  //Serial.println("Target step set to: " + String(_targetStep));
+  //Serial.println("Current step is: " + String(_currentStep));
 }
 
 int X27Motor::getPosition() {
@@ -131,6 +124,11 @@ void X27Motor::stop() {
 
 bool X27Motor::isHomed() {
   return _homed;
+}
+
+void X27Motor::setHomed(bool homed) {
+  _homed = homed;
+  //Serial.println("setHomed called, homed = " + String(homed));
 }
 
 void X27Motor::applySequence(int seqIndex) {
@@ -157,6 +155,7 @@ void X27Motor::stepForwardOnce() {
   applySequence(seq);
   _currentStep++;
   if (_currentStep > (int)_fullSteps) _currentStep = _fullSteps;
+  //Serial.println("Stepped forward to step: " + String(_currentStep));
 }
 
 void X27Motor::stepBackwardOnce() {
@@ -164,6 +163,7 @@ void X27Motor::stepBackwardOnce() {
   applySequence(seq);
   _currentStep--;
   if (_currentStep < 0) _currentStep = 0;
+  //Serial.println("Stepped backward to step: " + String(_currentStep));
 }
 
 void X27Motor::taskRun(void *arg) {
@@ -175,13 +175,14 @@ void X27Motor::taskRun(void *arg) {
     if (target == current) {
       vTaskDelay(idleDelay);
       if(!dev->isHomed())
-        dev->setHomed(true); // ensure homed flag remains true after reaching target
+      {
+        dev->setHomed(true); // ensure homed flag 
         dev->_targetStep = 0;
         dev->_currentStep = 0;
+      }
       continue;
     }
-
-    if (target > current) {
+    else if (target > current) {
       dev->stepForwardOnce();
     } else {
       dev->stepBackwardOnce();

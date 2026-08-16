@@ -10,8 +10,8 @@ void setup() {
 	motor.setMinMaxValue(0, 120);
 	motor.setFullTravelSteps(600);
 	motor.setStepDelay(1); // minimal delay for max speed; adjust if needed
-	motor.begin(true); // performs homing
-	Serial.println("Homing complete");
+	motor.begin(); // performs homing
+
 }
 
 void loop() {
