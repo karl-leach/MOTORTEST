@@ -37,6 +37,8 @@ public:
 
   void stop();
   bool isHomed();
+  void setHomed(bool homed) { _homed = homed; } // for testing only
+  
 
 private:
   int _ain1, _ain2, _bin1, _bin2, _standby;
@@ -51,6 +53,7 @@ private:
   volatile int _currentStep;
   volatile int _targetStep;
   volatile bool _homed;
+  
   uint16_t _stepDelayMs;
 
   TaskHandle_t _taskHandle;

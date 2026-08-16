@@ -65,6 +65,7 @@ void X27Motor::begin(bool doHoming) {
     _currentStep = 0;
     _targetStep = 0;
     _homed = true;
+
   }
 
   // create background task
@@ -173,6 +174,8 @@ void X27Motor::taskRun(void *arg) {
     int current = dev->_currentStep;
     if (target == current) {
       vTaskDelay(idleDelay);
+      if(!dev->isHomed())
+        dev->setHomed(true); // ensure homed flag remains true after reaching target
       continue;
     }
 
