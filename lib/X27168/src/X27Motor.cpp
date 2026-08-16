@@ -71,7 +71,8 @@ void X27Motor::begin(bool doHoming) {
   if (!_taskHandle) {
     xTaskCreatePinnedToCore(taskRun, "X27MotorTask", 2048, this, 1, &_taskHandle, 1);
     _currentStep = 610;
-    setPosition(_minVal); // move to minVal position after homing
+    setPosition(_minVal,true); // move to minVal position after homing
+    _homed = true;
 
   }
 }
@@ -92,10 +93,10 @@ void X27Motor::setStepDelay(uint16_t ms) {
   _stepDelayMs = ms;
 }
 
-void X27Motor::setPosition(int value) {
+void X27Motor::setPosition(int value, bool isHoming) {
 
-  if(_homed == false) {
-    // If not homed, ignore setPosition calls
+  if(!_homed && !isHoming) {
+    // If not homed and not a homing call, ignore setPosition calls
     return;
   }
 

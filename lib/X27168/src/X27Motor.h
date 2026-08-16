@@ -32,7 +32,7 @@ public:
   void setStepDelay(uint16_t ms);
 
   // setPosition in user units (clamped to min/max)
-  void setPosition(int value);
+  void setPosition(int value, bool isHoming = false);
   int getPosition();
 
   void stop();
