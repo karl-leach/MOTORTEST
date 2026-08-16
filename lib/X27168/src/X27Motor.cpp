@@ -176,6 +176,8 @@ void X27Motor::taskRun(void *arg) {
       vTaskDelay(idleDelay);
       if(!dev->isHomed())
         dev->setHomed(true); // ensure homed flag remains true after reaching target
+        dev->_targetStep = 0;
+        dev->_currentStep = 0;
       continue;
     }
 
