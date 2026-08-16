@@ -70,6 +70,9 @@ void X27Motor::begin(bool doHoming) {
   // create background task
   if (!_taskHandle) {
     xTaskCreatePinnedToCore(taskRun, "X27MotorTask", 2048, this, 1, &_taskHandle, 1);
+    _currentStep = 610;
+    setPosition(_minVal); // move to minVal position after homing
+
   }
 }
 
